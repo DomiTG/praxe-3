@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Přehled</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="font-sans antialiased h-screen bg-zinc-900 text-white">
+    <div class="container mx-auto p-4">
+        <nav class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold">Přehled</h1>
+            <div class="flex items-center">
+                <a href="#" class="text-white mr-4">Přehled</a>
+                <a href="dph.html" class="text-white mr-4">DPH</a>
+                <a href="currency.html" class="text-white mr-4">Převod měn</a>
+                <a href="calculator.html" class="text-white mr-4">Kalkulačka</a>
+                <a href="login.html" class="text-white">Přihlašovací formulář</a>
+            </div>
+        </nav>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="p-4 bg-zinc-800 rounded-md">
+                <h2 class="text-xl font-bold mb-2">Přehled Příjmů</h2>
+                <div id="income-chart" class="mb-4"></div>
+                <table class="table-auto w-full">
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-2">Datum</th>
+                            <th class="px-4 py-2">Částka</th>
+                            <th class="px-4 py-2">Kategorie</th>
+                        </tr>
+                    </thead>
+                    <tbody id="income-list">
+                    </tbody>
+                </table>
+            </div>
+            <div class="p-4 bg-zinc-800 rounded-md">
+                <h2 class="text-xl font-bold mb-2">Přehled Výdajů</h2>
+                <div id="expense-chart" class="mb-4"></div>
+                <table class="table-auto w-full">
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-2">Datum</th>
+                            <th class="px-4 py-2">Částka</th>
+                            <th class="px-4 py-2">Kategorie</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expense-list">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+            <div class="p-4 bg-zinc-800 rounded-md">
+                <h2 class="text-xl font-bold mb-2">Přidat Příjem</h2>
+                <div class="mb-4">
+                    <label for="income-date" class="block text-white text-lg font-bold mb-2">Datum</label>
+                    <input type="date" name="income-date" id="income-date" class="w-full p-2 rounded-lg bg-zinc-700 text-white">
+                </div>
+                <div class="mb-4">
+                    <label for="income-amount" class="block text-white text-lg font-bold mb-2">Částka</label>
+                    <input type="number" name="income-amount" id="income-amount" class="w-full p-2 rounded-lg bg-zinc-700 text-white">
+                </div>
+                <div class="mb-4">
+                    <label for="income-category" class="block text-white text-lg font-bold mb-2">Kategorie</label>
+                    <input type="text" name="income-category" id="income-category" class="w-full p-2 rounded-lg bg-zinc-700 text-white">
+                </div>
+                <div class="mb-4">
+                    <button type="submit" class="w-full p-2 rounded-lg bg-zinc-700 text-white" onclick="addIncome(document.getElementById('income-date').value, document.getElementById('income-amount').value, document.getElementById('income-category').value)">Přidat Příjem</button>
+                </div>
+            </div>
+            <div class="p-4 bg-zinc-800 rounded-md">
+                <h2 class="text-xl font-bold mb-2">Přidat Výdaj</h2>
+                <div class="mb-4">
+                    <label for="expense-date" class="block text
+                    -white text-lg font-bold mb-2">Datum</label>
+                    <input type="date" name="expense-date" id="expense-date" class="w-full p-2 rounded-lg bg-zinc-700 text-white">
+                </div>
+                <div class="mb-4">
+                    <label for="expense-amount" class="block text-white text-lg font-bold mb-2">Částka</label>
+                    <input type="number" name="expense-amount" id="expense-amount" class="w-full p-2 rounded-lg bg-zinc-700 text-white">
+                </div>
+                <div class="mb-4">
+                    <label for="expense-category" class="block text-white text-lg font-bold mb-2">Kategorie</label>
+                    <input type="text" name="expense-category" id="expense-category" class="w-full p-2 rounded-lg bg-zinc-700 text-white">
+                </div>
+                <div class="mb-4">
+                    <button type="submit" class="w-full p-2 rounded-lg bg-zinc-700 text-white" onclick="addExpense(document.getElementById('expense-date').value, document.getElementById('expense-amount').value, document.getElementById('expense-category').value)">Přidat Výdaj</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script>
+        const incomeData = [
+            { date: '2024-02-01', amount: 1000, category: 'Platba za práci' },
+            { date: '2024-02-03', amount: 1500, category: 'Dividendy' },
+        ];
+
+        const expenseData = [
+            { date: '2024-02-02', amount: 500, category: 'Potraviny' },
+            { date: '2024-02-04', amount: 300, category: 'Restaurace' },
+        ];
+
+        function renderLists(data, listElement) {
+            listElement.innerHTML = '';
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-4 py-2">${item.date}</td>
+                    <td class="px-4 py-2">${item.amount}</td>
+                    <td class="px-4 py-2">${item.category}</td>
+                `;
+                listElement.appendChild(row);
+            });
+        }
+        renderLists(incomeData, document.getElementById('income-list'));
+        renderLists(expenseData, document.getElementById('expense-list'));
+        function renderCharts(incomeData, expenseData) {
+            const incomeChart = new ApexCharts(document.getElementById('income-chart'), {
+                series: [{
+                    name: 'Příjmy',
+                    data: incomeData.map(item => item.amount)
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 350,
+                    foreColor: '#e2e8f0'
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '55%',
+                        endingShape: 'rounded'
+                    },
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                xaxis: {
+                    categories: incomeData.map(item => item.date),
+                },
+            });
+            incomeChart.render();
+            const expenseChart = new ApexCharts(document.getElementById('expense-chart'), {
+                series: [{
+                    name: 'Výdaje',
+                    data: expenseData.map(item => item.amount)
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 350,
+                    foreColor: '#e2e8f0'
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '55%',
+                        endingShape: 'rounded'
+                    },
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                xaxis: {
+                    categories: expenseData.map(item => item.date),
+                },
+            });
+            expenseChart.render();
+        }
+        renderCharts(incomeData, expenseData);
+
+        const addExpense = (date, amount, category) => {
+            expenseData.push({ date, amount, category });
+            renderLists(expenseData, document.getElementById('expense-list'));
+            renderCharts(incomeData, expenseData);
+        }
+        const addIncome = (date, amount, category) => {
+            incomeData.push({ date, amount, category });
+            renderLists(incomeData, document.getElementById('income-list'));
+            renderCharts(incomeData, expenseData);
+        }
+    </script>
+</body>
+
+</html>

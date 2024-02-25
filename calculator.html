@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sazební kalkulačka</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-zinc-900">
+    <div class="h-screen flex justify-center items-center">
+        <div class="w-96 bg-zinc-800 p-8 rounded-lg">
+            <h1 class="text-white text-3xl font-bold mb-8">Sazební kalkulačka</h1>
+            <div class="flex flex-col mb-4">
+                <label for="initialAmount" class="block text-white text-lg font-bold mb-2">Počáteční částka</label>
+                <input type="number" name="initialAmount" id="initialAmount" class="w-full p-2 rounded-lg bg-zinc-700 text-white" placeholder="Kč">
+            </div>
+            <div class="flex flex-col mb-4">
+                <label for="monthlyDeposit" class="block text-white text-lg font-bold mb-2">Měsíční vklad</label>
+                <input type="number" name="monthlyDeposit" id="monthlyDeposit" class="w-full p-2 rounded-lg bg-zinc-700 text-white" placeholder="Kč">
+            </div>
+            <div class="flex flex-col mb-4">
+                <label for="annualInterestRate" class="block text-white text-lg font-bold mb-2">Roční úroková sazba (%)</label>
+                <input type="number" name="annualInterestRate" id="annualInterestRate" class="w-full p-2 rounded-lg bg-zinc-700 text-white" step="0.01" placeholder="%">
+            </div>
+            <div class="flex flex-col mb-4">
+                <label for="durationYears" class="block text-white text-lg font-bold mb-2">Doba trvání (v letech)</label>
+                <input type="number" name="durationYears" id="durationYears" class="w-full p-2 rounded-lg bg-zinc-700 text-white" placeholder="Let">
+            </div>
+            <div class="mb-4">
+                <button type="button" class="w-full p-2 rounded-lg bg-zinc-700 text-white" onclick="calculate()">Spočítat</button>
+            </div>
+            <div id="result" class="text-white text-lg font-bold"></div>
+        </div>
+    </div>
+    <script>
+        const calculate = () => {
+            const initialAmount = parseFloat(document.getElementById('initialAmount').value);
+            const monthlyDeposit = parseFloat(document.getElementById('monthlyDeposit').value);
+            const annualInterestRate = parseFloat(document.getElementById('annualInterestRate').value) / 100;
+            const durationYears = parseInt(document.getElementById('durationYears').value);
+
+            let futureValue = initialAmount;
+
+            for (let i = 0; i < durationYears; i++) {
+                futureValue += futureValue * annualInterestRate;
+                futureValue += monthlyDeposit * 12;
+            }
+
+            document.getElementById('result').innerText = `Odhadovaná budoucí hodnota: ${futureValue.toFixed(2)} Kč`;
+        }
+    </script>
+</body>
+</html>
